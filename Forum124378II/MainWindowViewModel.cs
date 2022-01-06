@@ -8,22 +8,15 @@ namespace Forum124378II
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private ViewModelBase viewModelBase;
+        private Navigator navigator;
+        private ViewModelFactory viewModelFactory;
+        private ViewModelTypes selectedViewType;
+        private string errorMessage;
 
         public ViewModelBase CurrentViewModel
         {
-            get { return viewModelBase; }
-            set
-            {
-                if (viewModelBase != value)
-                {
-                    viewModelBase = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return navigator.CurrentViewModel; }
         }
-
-        private string errorMessage;
 
         public string ErrorMessage
         {
@@ -38,6 +31,50 @@ namespace Forum124378II
             }
         }
 
+        public IEnumerable<ViewModelTypes> ViewTypes
+        {
+            get
+            {
+                return Enum.GetValues(typeof(ViewModelTypes)).Cast<ViewModelTypes>();
+            }
+        }
 
+        public ViewModelTypes SelectedViewType
+        {
+            get { return selectedViewType; }
+            set
+            {
+                if (selectedViewType != value)
+                {
+                    selectedViewType = value;
+                    OnPropertyChanged();
+                    UpdateView();
+                }
+            }
+        }
+
+        public MainWindowViewModel()
+        {
+            navigator = new Navigator();
+            viewModelFactory = new ViewModelFactory();
+
+            navigator.StateChanged += ViewModelChanged;
+            SelectedViewType = ViewModelTypes.Customers;
+            navigator.CurrentViewModel = viewModelFactory.Get(SelectedViewType);
+        }
+
+        private void UpdateView()
+        {
+            navigator.CurrentViewModel = viewModelFactory.Get(SelectedViewType);
+        }
+
+        private void ViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentViewModel));
+            if (CurrentViewModel is IMessage viewModelWithMessage)
+            {
+                ErrorMessage = viewModelWithMessage.Message;
+            }
+        }
     }
 }

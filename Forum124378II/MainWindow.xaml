@@ -5,23 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Forum124378II"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="300">
 
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:CustomerViewModel}">
+            <local:Customers />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:DealerViewModel}">
+            <local:Dealers />
+        </DataTemplate>
+    </Window.Resources>
+    
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
-    
-    
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60" />
-            <RowDefinition Height="60" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <TextBlock Text="Views: "
+                       VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding ViewTypes}"
+                      SelectedItem="{Binding SelectedViewType}"/>
+
+        </StackPanel>
+
+        <ContentControl Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Content="{Binding CurrentViewModel}" />
+
+        <TextBlock Grid.Row="2"
+                   FontWeight="Bold"
+                   Foreground="Red">
+            <Run Text="Error: " />
+            <Run Text="{Binding ErrorMessage}" />
+        </TextBlock>
+                   
     </Grid>
 </Window>

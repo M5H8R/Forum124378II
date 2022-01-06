@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Forum124378II
 {
-    public class DealerViewModel : ViewModelBase
+    public class DealerViewModel : ViewModelBase, IMessage
     {
         public ObservableCollection<Dealer> Dealers { get; set; }
 
